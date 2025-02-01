@@ -1,0 +1,17 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: producer
+  rabbitmq:
+    addresses: localhost:5672
+
+rabitmq:
+  exchange:
+    test: exchange.test
+  queue:
+    test: test-queue
+  route-key:
+    test: test-key
+
+
