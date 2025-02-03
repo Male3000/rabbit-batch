@@ -1,14 +1,12 @@
 package com.rabit.consumer.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Setter
 @Getter
+@ToString
 public class ProductDTO {
         private String name;
         private String description;

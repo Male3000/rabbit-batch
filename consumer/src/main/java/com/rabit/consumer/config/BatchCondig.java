@@ -1,12 +1,12 @@
 package com.rabit.consumer.config;
 
-import com.rabit.consumer.ItemReader.AmqpItemReader;
 import com.rabit.consumer.data.ProductDTO;
 import com.rabit.consumer.model.Product;
 import com.rabit.consumer.repo.ProductRepo;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -17,12 +17,9 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +31,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @RequiredArgsConstructor
 public class BatchCondig {
+    private static final Logger log = LoggerFactory.getLogger(BatchCondig.class);
     private final PlatformTransactionManager platformTransactionManager;
     private final JobRepository jobRepository;
     private final AmqpTemplate amqpTemplate;
@@ -46,7 +44,6 @@ public class BatchCondig {
     public FlatFileItemWriter<Product> fileWriter() {
         FlatFileItemWriter<Product> writer = new FlatFileItemWriter<>();
         writer.setResource(new FileSystemResource("outputs/outputFile.txt"));
-
         DelimitedLineAggregator<Product> aggregator = new DelimitedLineAggregator<>();
         BeanWrapperFieldExtractor<Product> extractor = new BeanWrapperFieldExtractor<>();
         extractor.setNames(new String[]{
@@ -70,13 +67,14 @@ public class BatchCondig {
     public ItemReader<ProductDTO> amqpItemReader() {
         return () -> {
             var data =(ProductDTO) amqpTemplate.receiveAndConvert(testQueue);
+            System.out.printf("[read message] %s%n", data);
             return data;
         };
     }
 
     @Bean
     public Job testJob() {
-        return new JobBuilder("testJob", jobRepository)
+        return new JobBuilder("testJob2099", jobRepository)
                 .start(testStep1())
                 .incrementer(new RunIdIncrementer())
                 .build();

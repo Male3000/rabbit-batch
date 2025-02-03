@@ -11,13 +11,13 @@ import org.springframework.util.Assert;
 // and only use default queue, no such option to listen other queue by name
 // and the code is not much either so...copy past, make adjustment...
 
-public class AmqpItemReader<T> implements ItemReader<T> {
+public class AmqpItemReaderBuiltIn<T> implements ItemReader<T> {
 
     private final AmqpTemplate amqpTemplate;
 
     private Class<? extends T> itemType;
 
-    public AmqpItemReader(final AmqpTemplate amqpTemplate) {
+    public AmqpItemReaderBuiltIn(final AmqpTemplate amqpTemplate) {
         Assert.notNull(amqpTemplate, "AmqpTemplate must not be null");
 
         this.amqpTemplate = amqpTemplate;

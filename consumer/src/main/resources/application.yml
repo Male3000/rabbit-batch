@@ -17,9 +17,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: false
-#  batch:
-#    job:
-#      enabled: false
+  batch:
+    job:
+      enabled: false
 
 rabitmq:
   exchange:
